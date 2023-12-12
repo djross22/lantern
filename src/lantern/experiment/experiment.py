@@ -287,11 +287,11 @@ class Experiment:
         if 's' not in kwargs:
             kwargs['s'] = 9
             
-        x = df_z[f'z_{z_dims[0]}']
-        y = df_z[f'z_{z_dims[1]}']
+        x = df_z[f'z_{z_dims[0]}'].values
+        y = df_z[f'z_{z_dims[1]}'].values
         if type(phenotype) is str:
-            c = df_c[phenotype]
-            cerr = np.sqrt(df_c[f'{phenotype}_var'])
+            c = df_c[phenotype].values
+            cerr = np.sqrt(df_c[f'{phenotype}_var'].values)
         else:
             c = phenotype[0][0]*df_c[phenotype[0][1]].values
             cvar = np.abs(phenotype[0][0])*df_c[f'{phenotype[0][1]}_var'].values
@@ -374,6 +374,7 @@ class Experiment:
         
     def latent_space_grid_plot(self,
                                df_pred=None, # DataFrame with phenotypes and z-coordinates for the scatterplot. If None, the mutations_list is used to get a prediction_table().
+                               df_exp=None,
                                mutations_list=None, # input list of substitutions to predict. If None, the full input data for the experiment is used.
                                max_z_dim=4,
                                phenotype=None, #If not string, then a list of tuples defining linear mixture of phenotypes
@@ -407,7 +408,10 @@ class Experiment:
                 else:
                     colorbar = ax is axs_grid[0,0]
                     self.latent_space_plot(phenotype=phenotype, z_dims=[i+1, j+2], xlim=plot_lims[i], ylim=plot_lims[j+1], 
-                                           df_pred=df_pred, fig_ax=(fig, ax), colorbar=colorbar, phenotype_label=phenotype_label,
+                                           df_pred=df_pred, 
+                                           df_exp=df_exp,
+                                           mutations_list=mutations_list,
+                                           fig_ax=(fig, ax), colorbar=colorbar, phenotype_label=phenotype_label,
                                            **kwargs);
         
         return fig, axs_grid;
